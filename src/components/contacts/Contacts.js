@@ -1,52 +1,47 @@
 import React, { Component } from "react";
 import Contact from "./Contact";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import { GET_CONTACTS } from "../../actions/types";
 
 class Contacts extends Component {
-  state = {
-    contacts: [
-      {
-        id: 1,
-        name: "Brandon Turner",
-        email: "brandonturner@gmail.com",
-        phone: "111-111-1111"
-      },
-      {
-        id: 2,
-        name: "Alexis Mavromatis",
-        email: "alexismavromatis@gmail.com",
-        phone: "222-222-2222"
-      },
-      {
-        id: 3,
-        name: "Emma Turner",
-        email: "emmaturner@gmail.com",
-        phone: "333-333-3333"
-      },
-      {
-        id: 4,
-        name: "Lila Turner",
-        email: "lilaturner@gmail.com",
-        phone: "444-444-4444"
-      }
-    ]
-  };
+  componentDidMount() {
+    this.props.getContacts();
+  }
 
   render() {
-    const { contacts } = this.state;
-
+    const { contacts } = this.props;
     return (
-      <div>
-        {contacts.map(contact => (
-          <Contact
-            //react requires keys
-            key={contact.id}
-            //passing in entire contact object
-            contact={contact}
-          />
-        ))}
-      </div>
+      <React.Fragment>
+        <div>
+          {contacts.map(contact => (
+            <Contact
+              //react requires keys
+              key={contact.id}
+              //passing in entire contact object
+              contact={contact}
+            />
+          ))}
+        </div>
+      </React.Fragment>
     );
   }
 }
 
-export default Contacts;
+Contacts.propTypes = {
+  contacts: PropTypes.array.isRequired,
+  getContacts: PropTypes.func.isRequired
+};
+
+const mapStateToProps = state => ({
+  contacts: state.contact.contacts
+});
+
+const mapDispatchToProps = dispatch => ({
+  getContacts: () => dispatch({ type: GET_CONTACTS })
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Contacts);
